@@ -1,32 +1,32 @@
-import streamlit as st
-import joblib
-import numpy as np
-import pandas as pd
-import shap
-import matplotlib.pyplot as plt
-import os
+import streamlit as st   将streamlit导入为st
+import joblib   进口joblib
+import numpy    导入numpy为npas np
+import pandas    以pd方式导入熊猫as pd
+import shap   导入 SHAP
+import matplotlib.pyplot as plt进口matplotlib。Pyplot为PLT
+import os   进口的
 
-model_path = r'C:\Users\zhao.jingxuan\pythonProject\3011\catboost_info\model_MLPllmin9994.pkl'
-model = joblib.load(model_path)
-import os
+model_path = 'catboost_info\model_MLPllmin9994.pkl'model_path = ‘catboost_info\model_MLPllmin9994.pkl’
+model = joblib.load(model_path)Model = joblib.load（model_path）
+import   进口 os   进口的
 
 
-# Define feature names
-feature_names = [
-    "glucose", "albumin", "Scr", "Ka", "P", "NT.proBNP", "fibrinogen", "CRP"
+# Define feature names   定义特性名称
+feature_names = [   Feature_names = [
+    "glucose", "albumin", "Scr", "Ka", "P", "NT.proBNP", "fibrinogen", "CRP"“葡萄糖”、“白蛋白”、“可控硅”、“卡”,“P”,“NT.proBNP”、“纤维蛋白原”,“c反应蛋白”
 ]
 
 # Streamlit 名字
-st.title("Heart Disease Predictor")
-model_path1 = r'C:\Users\zhao.jingxuan\pythonProject\3011\catboost_info\min_max_scaler9994.pkl'
-min_max_scaler = joblib.load(model_path1 )
-# User inputs
-import streamlit as st
+st.title   标题("Heart Disease Predictor")
+model_path1 = 'catboost_info\min_max_scaler9994.pkl'Model_path1 = ‘catboost_info\min_max_scaler9994.pkl’
+min_max_scaler = joblib.load(model_path1 )Min_max_scaler = joblib。加载(model_path1)
+# User inputs   #用户输入
+import streamlit as st   将streamlit导入为st
 
-glucose = st.number_input("glucose:", min_value=2.0, max_value=50.0, value=30.0)
-albumin = st.number_input("albumin:", min_value=10.0, max_value=70.0, value=60.0)
-Scr = st.number_input("Scr mg/dl (chol):", min_value=20.0, max_value=1000.0, value=100.0)
-Ka = st.number_input("Ka:", min_value=0.1, max_value=10.0, value=1.0)
+glucose = st.number_input("glucose:", min_value=2.0, max_value=50.0, value=30.0)葡萄糖= st.number_input（“葡萄糖：”，min_value=2.0, max_value=50.0, value=30.0）
+albumin = st.number_input("albumin:", min_value=10.0, max_value=70.0, value=60.0)（" Albumin:", min_value=10.0, max_value=70.0, value=60.0）
+Scr = st.number_input("Scr mg/dl (chol):", min_value=20.0, max_value=1000.0, value=100.0)Scr = st.number_input（"Scr mg/dl (chol):"   “Scr毫克/分升（胆固醇）：”, min_value=20.0, max_value=1000.0, value=100.0）
+Ka = st.number_input("Ka:", min_value=0.1, max_value=10.0, value=1.0)（"Ka:", min_value=0.1, max_value=10.0, value=1.0）
 P = st.number_input("P:", min_value=0.1, max_value=20.0, value=5.0)
 fibrinogen = st.number_input("fibrinogen:", min_value=0.5, max_value=15.0, value=1.0)
 CRP = st.number_input("CRP:", min_value=0.0, max_value=15.0, value=1.0)
@@ -39,7 +39,7 @@ features_scaled = np.array([feature_values])
 # 使用加载的 MinMaxScaler 对用户输入的数据进行归一化
 features = min_max_scaler.transform(features_scaled)
 # Load background data for SHAP
-background_data_path = r'C:\Users\zhao.jingxuan\pythonProject\3011\catboost_info\train_sample_501234.csv'
+background_data_path = 'catboost_info\train_sample_501234.csv'
 background_data = pd.read_csv(background_data_path)
 
 # 确保选择特定的列进行缩放
@@ -65,8 +65,8 @@ if st.button("Predict"):
             "I recommend that you consult a cardiologist as soon as possible for further evaluation and "
             "to ensure you receive an accurate diagnosis and necessary treatment."
         )
-    else:
-        advice = (
+    else:   其他:
+        advice = (   建议= (
             f"According to our model, you have a low risk of heart disease. "
             f"The model predicts that your probability of not having heart disease is {probability:.1f}%. "
             "However, maintaining a healthy lifestyle is still very important. "
@@ -82,10 +82,10 @@ if st.button("Predict"):
     shap_values = explainer_shap(pd.DataFrame(features, columns=feature_names))
 
     # 获取 expected_value 和 shap_values 的正确部分
-    if isinstance(explainer_shap.expected_value, list) or isinstance(explainer_shap.expected_value, np.ndarray):
+    if isinstance(explainer_shap.expected_value, list) or isinstance(explainer_shap.expected_value, np.ndarray):如果isinstance (explainer_shap。Expected_value, list)或isinstance(explainer_shap。expected_value np.ndarray):
         expected_value = explainer_shap.expected_value[1] if predicted_class == 1 else explainer_shap.expected_value[0]
         shap_values_for_class = shap_values.values[0, :, 1] if predicted_class == 1 else shap_values.values[0, :, 0]
-    else:
+    else:   其他:
         expected_value = explainer_shap.expected_value
         shap_values_for_class = shap_values.values[0, :]
 
